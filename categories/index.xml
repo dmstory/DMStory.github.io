@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on DMStory - 大喵的故事</title>
+    <link>http://localhost:1313/categories/</link>
+    <description>Recent content in Categories on DMStory - 大喵的故事</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>DMStory By 董大喵 | &lt;a href=&#34;http://beian.miit.gov.cn&#34; target=&#34;_blank&#34;&gt;冀ICP备20009841号&lt;/a&gt;</copyright>
+    <lastBuildDate>Sat, 17 Sep 2022 10:09:15 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Unity</title>
+      <link>http://localhost:1313/categories/unity/</link>
+      <pubDate>Sat, 17 Sep 2022 10:09:15 +0800</pubDate>
+      
+      <guid>http://localhost:1313/categories/unity/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Golang基础篇</title>
+      <link>http://localhost:1313/categories/golang%E5%9F%BA%E7%A1%80%E7%AF%87/</link>
+      <pubDate>Sun, 07 Aug 2022 12:00:26 +0800</pubDate>
+      
+      <guid>http://localhost:1313/categories/golang%E5%9F%BA%E7%A1%80%E7%AF%87/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hugo</title>
+      <link>http://localhost:1313/categories/hugo/</link>
+      <pubDate>Sun, 19 Dec 2021 15:01:14 +0800</pubDate>
+      
+      <guid>http://localhost:1313/categories/hugo/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

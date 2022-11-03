@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>浅谈UGUI优化-DrawCall篇 - DMStory - 大喵的故事</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="董大喵" /><meta name="description" content="说起UGUI的优化，DrawCall一定是一个绕不开的话题。当然不只是UI优化，Unity中性能优化都会涉及DrawCall的优化。
+" /><meta name="keywords" content="Unity, U3D, C#, Golang, 图形学" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.91.0-DEV with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/ugui-optimize-drawcall/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<link href="/sass/main.min.b5a744db6de49a86cadafb3b70f555ab443f83c307a483402259e94726b045ff.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/paragraph_indent.css">
+
+
+<meta property="og:title" content="浅谈UGUI优化-DrawCall篇" />
+<meta property="og:description" content="说起UGUI的优化，DrawCall一定是一个绕不开的话题。当然不只是UI优化，Unity中性能优化都会涉及DrawCall的优化。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/ugui-optimize-drawcall/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-12-25T11:34:43+08:00" />
+<meta property="article:modified_time" content="2021-12-25T11:34:43+08:00" />
+
+<meta itemprop="name" content="浅谈UGUI优化-DrawCall篇">
+<meta itemprop="description" content="说起UGUI的优化，DrawCall一定是一个绕不开的话题。当然不只是UI优化，Unity中性能优化都会涉及DrawCall的优化。"><meta itemprop="datePublished" content="2021-12-25T11:34:43+08:00" />
+<meta itemprop="dateModified" content="2021-12-25T11:34:43+08:00" />
+<meta itemprop="wordCount" content="1785">
+<meta itemprop="keywords" content="UGUI,优化," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="浅谈UGUI优化-DrawCall篇"/>
+<meta name="twitter:description" content="说起UGUI的优化，DrawCall一定是一个绕不开的话题。当然不只是UI优化，Unity中性能优化都会涉及DrawCall的优化。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">DMStory</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">主页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">DMStory</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">主页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">浅谈UGUI优化-DrawCall篇</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021年12月25日 </span>
+        <div class="post-category">
+            <a href="/categories/unity/"> Unity </a>
+            </div>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#什么是drawcall">什么是DrawCall</a></li>
+        <li><a href="#为什么要优化drawcall">为什么要优化DrawCall</a></li>
+        <li><a href="#如何优化drawcall">如何优化DrawCall</a></li>
+        <li><a href="#建议">建议</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>说起UGUI的优化，DrawCall一定是一个绕不开的话题。当然不只是UI优化，Unity中性能优化都会涉及DrawCall的优化。</p>
+<h2 id="什么是drawcall">什么是DrawCall</h2>
+<p>Unity要渲染一帧画面，需要经过两个阶段，CPU阶段和GPU阶段：CPU阶段Unity把渲染需要的数据准备好，GPU阶段通过渲染管线，利用这些数据渲染出画面。CPU把数据传递给GPU，通知GPU进行渲染的过程，就叫做DrawCall。</p>
+<h2 id="为什么要优化drawcall">为什么要优化DrawCall</h2>
+<p>DrawCall的过程涉及CPU和GPU的交互，耗时比较高，一个未经优化的场景可能DrawCall动辄几百上千，严重影响CPU效率。可以用一个现实中绘画的例子进行类比：画画的时候可能是这样的，先拿起一种颜色的笔，画一部分，再换另一种颜色，画一部分。换笔的过程就相当于DrawCall的过程，而实际的作画相当于GPU在渲染，假设我画的速度非常快，远超过换笔的时间，那么过多的换笔次数就会成为我绘画的性能瓶颈。</p>
+<h2 id="如何优化drawcall">如何优化DrawCall</h2>
+<div class="admonition note"><p class="admonition-title">注意</p>
+<p>由于UGUI是以Canvas为单位进行渲染，不同Canvas即使顺序相邻且图集相同也不会合并，本文讨论的内容均是在同一个Canvas且没有子Canvas的情况下。</p>
+</div>
+<p>仍然用绘画作为类比，既然换笔的速度相对实际绘画来说要慢很多，那就减少换笔的次数，用一种颜色的画笔时，把整幅画需要用这个颜色的地方都画出来，然后再换笔，就可以用最少的换笔次数完成绘画。在Unity的渲染过程中也是类似的，如果我们能把使用相同渲染数据（主要是指材质）的网格用同一个DrawCall发送给GPU，就能够最大程度减少DrawCall，这就是所谓的合并（Batch）。</p>
+<p>当然，以上只是比较理想的过程，在渲染不透明物体的时候不会有什么问题，但是在渲染半透明物体的时候（UGUI中都是当作半透明物体来处理）由于半透明渲染必须啊严格按照从后往前的顺序，很多时候并不能进行合并。</p>
+<p>在下面的示例中，用不同的颜色代表不同的图集<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>，不同的图集在UGUI中则代表不同的材质。当只有两张图且图集不同时，DrawCall是2，这没什么好说的。当有四张图但是只包含两个图集，但是它们是穿插的关系时，由于不透明渲染只能严格按照从后往前的顺序，并不能将同图集的1、3合并，2、4合并，所以最终是4个DrawCall。当有四张图只包含两个图集，且同图集相邻的情况下，可以合并，此时是2个DrawCall。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">示例</th>
+<th style="text-align:center">DrawCall数<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><img src="/img/ugui-optimize-drawcall/draw_call_no_batch_2.png" alt="两张图不可合并"></td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:left"><img src="/img/ugui-optimize-drawcall/draw_call_no_batch_4.png" alt="四张图穿插不可合并"></td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:left"><img src="/img/ugui-optimize-drawcall/draw_call_batch_4.png" alt="四张图不穿插可合并"></td>
+<td style="text-align:center">2</td>
+</tr>
+</tbody>
+</table>
+<p>有一种特殊情况，不同图集的图在Hierarchy中出现穿插，由于Hirearchy中的顺序代表着渲染顺序(同一Canvas下)，我们认为不会合并DrawCall，但是如果他们在位置上并不重叠，UGUI仍然将DrawCall合并，这样算是一种优化吧。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">示例</th>
+<th style="text-align:center">DrawCall数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><img src="/img/ugui-optimize-drawcall/draw_call_no_batch_4.png" alt="四张图穿插不可合并"></td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:left"><img src="/img/ugui-optimize-drawcall/draw_call_special.png" alt="四张图穿插不重叠可合并"></td>
+<td style="text-align:center">2</td>
+</tr>
+</tbody>
+</table>
+<p>然而这只能算是一种福利，实际项目中要依赖这种优化比较难且危险，因为很多情况下很难直观地看出重叠关系，示例中使用的是完全不透明的资源，但是实际项目中经常出现元素的半透明区域，这些重叠只有刻意在Scene视图下查看才比较容易看出来，一不留神就会出现无法合并的情况。</p>
+<h2 id="建议">建议</h2>
+<ul>
+<li>
+<p>拆分Canvas，同一Canvas下用尽量少的图集，图集越多越容易出现穿插的情况，导致Batch失败。</p>
+</li>
+<li>
+<p>尽量避免图集中出现多张图的情况，否则DrawCall难以预测。</p>
+</li>
+<li>
+<p>条件允许的情况下可以通过手动调整Hierarchy中元素顺序的方式一定程度降低DrawCall。</p>
+</li>
+<li>
+<p>一些重复出现的小组件，比如背包中的道具，尽量保证使用的资源都在同一个图集，如果无法保证，尽量避免这些道具出现重叠，利用UGUI优化机制降低DrawCall。</p>
+</li>
+<li>
+<p>Scale为0或者Alpha为0可以避免DrawCall，但是移除屏幕外不会╮(╯▽╰)╭</p>
+</li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Unity的图集在内容超出最大贴图尺寸、不同内容使用不同参数的情况下可能会出现分成不同贴图的情况，这种情况其实对于渲染来说已经是不同的材质了，所以我们这里讨论的同图集指的是底层意义上的同图集，即使用的是相同的贴图，而非概念上的同一个图集。&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>这里的DrawCall仅表示这部分内容所占用的开销，实际在Unity工程中由于有摄像机的存在(比如Canvas使用的RenderMode使用的Camera模式)显示数量会多一些。&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">董大喵</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2021年12月25日
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a rel="license noopener" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/ugui/">UGUI</a>
+          <a href="/tags/%E4%BC%98%E5%8C%96/">优化</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/ugui-optimize-rebuild/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">浅谈UGUI优化-网格重建</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/use-hugo/">
+            <span class="next-text nav-default">使用Hugo快速建立静态网站</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2021-12-25 11:34:43 \u002b0800 CST',
+        title: '浅谈UGUI优化-DrawCall篇',
+        clientID: 'e89eab32485f08ff9874',
+        clientSecret: 'd0930f45b2c8c2fc737f632d5fb6a2f5e6339c8d',
+        repo: 'WebTalk',
+        owner: 'DMStory',
+        admin: ['DMStory'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:dmstory@163.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/DmStory" class="iconfont icon-github" title="github"></a>
+      <a href="https://space.bilibili.com/255279423" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2021 - 
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>DMStory By 董大喵 | <a href="http://beian.miit.gov.cn" target="_blank">冀ICP备20009841号</a></span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

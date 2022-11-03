@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shader on DMStory - 大喵的故事</title>
+    <link>http://localhost:1313/tags/shader/</link>
+    <description>Recent content in Shader on DMStory - 大喵的故事</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>DMStory By 董大喵 | &lt;a href=&#34;http://beian.miit.gov.cn&#34; target=&#34;_blank&#34;&gt;冀ICP备20009841号&lt;/a&gt;</copyright>
+    <lastBuildDate>Sat, 17 Sep 2022 10:09:15 +0800</lastBuildDate><atom:link href="http://localhost:1313/tags/shader/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>UnityShader-高斯模糊的使用</title>
+      <link>http://localhost:1313/post/unity-shader-gaussian-blur/</link>
+      <pubDate>Sat, 17 Sep 2022 10:09:15 +0800</pubDate>
+      
+      <guid>http://localhost:1313/post/unity-shader-gaussian-blur/</guid>
+      <description>高斯模糊 高斯模糊是一种常见的图像模糊算法，它使用正太分布的方式计算图像的某一位置与其相邻位置的加权平均值。对于一个二维图像来说，权重的计算，</description>
+    </item>
+    
+    <item>
+      <title>使用shader实现fillamount效果</title>
+      <link>http://localhost:1313/post/unity-shader-sprite-fillamount/</link>
+      <pubDate>Sun, 26 Jun 2022 11:12:15 +0800</pubDate>
+      
+      <guid>http://localhost:1313/post/unity-shader-sprite-fillamount/</guid>
+      <description>&lt;p&gt;使用UGUI的Image可以轻松实现进度条的效果。但是有些情况下我们需要制作针对游戏世界中的物体的进度条，例如人物头顶的HP条，机器旁边的CD条等。常规的做法通过将世界坐标映射到UI，然后使用Image制作这些元素。当游戏世界中的物体
+位置改变的时候，需要通知UI去改变相应元素的位置，如果需要考虑摄像机对于进度条的影响，例如摄像机拉远时进度条变小，则会更加麻烦。&lt;/p&gt;
+&lt;p&gt;这里提供一种使用shader实现进度条的方案。测试环境：Unity 2020.3.32。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
