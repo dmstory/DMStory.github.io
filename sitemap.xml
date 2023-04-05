@@ -3,48 +3,55 @@
   
   <url>
     <loc>http://localhost:1313/categories/</loc>
-    <lastmod>2022-08-07T12:00:26+08:00</lastmod>
+    <lastmod>2023-04-03T21:40:26+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>http://localhost:1313/</loc>
-    <lastmod>2022-08-07T12:00:26+08:00</lastmod>
+    <lastmod>2023-04-03T21:40:26+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>http://localhost:1313/tags/golang/</loc>
-    <lastmod>2022-08-07T12:00:26+08:00</lastmod>
+    <lastmod>2023-04-03T21:40:26+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>http://localhost:1313/categories/golang%E5%9F%BA%E7%A1%80%E7%AF%87/</loc>
-    <lastmod>2022-08-07T12:00:26+08:00</lastmod>
+    <lastmod>2023-04-03T21:40:26+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/golang-junior-goroutine/</loc>
-    <lastmod>2022-08-07T12:00:26+08:00</lastmod>
+    <loc>http://localhost:1313/post/golang-junior-race-condition/</loc>
+    <lastmod>2023-04-03T21:40:26+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>http://localhost:1313/post/</loc>
-    <lastmod>2022-08-07T12:00:26+08:00</lastmod>
+    <lastmod>2023-04-03T21:40:26+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2023-04-03T21:40:26+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://localhost:1313/post/golang-junior-goroutine/</loc>
     <lastmod>2022-08-07T12:00:26+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
